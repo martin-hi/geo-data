@@ -5,8 +5,10 @@ package de.rbz.geodaten.db;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.ContentValues;
