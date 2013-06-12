@@ -1,6 +1,5 @@
 package de.rbz.geodaten;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -22,6 +20,7 @@ public class MainActivity extends Activity {
 	private LocationManager locationManager;
 	private GeodatenLocationListener locationListener;
 	private ListView txt_locations;
+	ListAdapter listAdapter;
 	
 	private Database db;
 		
@@ -31,15 +30,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // initialize database
         db = new Database(this);
         
-        dataPoints = new ArrayList<GeoDataPoint>();
+        // read all records from database
+        dataPoints = db.read();
+        
+        // initialize GPS
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);                     
         locationListener = new GeodatenLocationListener(dataPoints, db);        
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         
+        // bind DataPoints to ListView
 		txt_locations = (ListView)findViewById(R.id.locationsList);
-		ListAdapter listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dataPoints);
+		listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dataPoints);
 		
 		locationListener.setViewObjects(listAdapter, txt_locations);
 		
@@ -53,8 +57,5 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    public void click(View view) {
-	
-    }
-    
+        
 }

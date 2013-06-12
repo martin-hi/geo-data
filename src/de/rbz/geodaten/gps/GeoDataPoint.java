@@ -21,7 +21,12 @@ public class GeoDataPoint {
 		this.date = new Date();
 		this.latitude = latitude;
 		this.longitude = longitude;
-		
+	}
+	
+	public GeoDataPoint(Date date, double latitude, double longitude) {
+		this.date = date;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public Date getDate() {
