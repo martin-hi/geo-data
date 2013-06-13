@@ -17,7 +17,9 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:clickable="true" >
+        android:clickable="true"
+        android:visibility="visible" >
+
     </ListView>
 
     <WebView
@@ -26,5 +28,13 @@
         android:layout_height="match_parent"
         android:layout_alignLeft="@+id/locationsList"
         android:layout_below="@+id/locationsList" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/locationsList"
+        android:layout_alignParentTop="true"
+        android:text="TextView" />
 
 </RelativeLayout>

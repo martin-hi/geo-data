@@ -2,7 +2,6 @@ package de.rbz.geodaten;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,17 +11,13 @@ import android.view.Menu;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import de.rbz.geodaten.db.Database;
+import de.rbz.geodaten.gps.GeoCalculator;
 import de.rbz.geodaten.gps.GeoDataPoint;
 import de.rbz.geodaten.gps.GeodatenLocationListener;
+import de.rbz.geodaten.gps.StaticMapsURLBuilder;
 
-
-/*
- * 
- * https://maps.google.at/maps?saddr=54.3252,10.1405&daddr=53.5534,9.9921+to:52.5234,13.4113+to:50.1115,+8.6805&hl=de&dirflg=w&z=7
- * 
- * 
- */
 
 public class MainActivity extends Activity {
 
@@ -50,14 +45,27 @@ public class MainActivity extends Activity {
 		
 		// read all records from database
 		dataPoints = db.read();
+		
+		dataPoints.add(new GeoDataPoint(54.3232d, 10.1227d));
+		dataPoints.add(new GeoDataPoint(54.3099d, 10.1324d));
+		dataPoints.add(new GeoDataPoint(54.3057d, 10.1631d));
 		Collections.sort(dataPoints);
+		
+		if(!dataPoints.isEmpty()) {
+			mapView.loadUrl(StaticMapsURLBuilder.buildUrl(dataPoints));
+		}	
+		
 
 		// bind DataPoints to ListView
 		listView = (ListView) findViewById(R.id.locationsList);
 		arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dataPoints);
 		listView.setAdapter(arrayAdapter);
 		arrayAdapter.notifyDataSetChanged();
-
+		
+		TextView text = (TextView) findViewById(R.id.textView1);		
+		
+		text.setText(GeoCalculator.calculateCoveredDistance(dataPoints) + " km");
+		
 		// initialize GPS
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationListener = new GeodatenLocationListener(dataPoints, db, arrayAdapter, mapView);
