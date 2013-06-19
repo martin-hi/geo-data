@@ -13,8 +13,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.format.DateFormat;
-import android.widget.TextView;
 import de.rbz.geodaten.gps.GeoDataPoint;
 
 /**
@@ -90,36 +88,6 @@ public class Database {
 	 * 
 	 * @return
 	 */
-	public List<Long> readDate() {
-		Cursor cursor = 
-				db.query(tblname, 
-						 new String[] {"timestamp"},
-						 null, null, null, null, "timestamp DESC");
-		
-		cursor.moveToFirst();
-		List<Long> list = new ArrayList<Long>();
-		
-		for(int i = 0; i < cursor.getCount(); i++) {
-			long date = cursor.getLong(0);
-			Date longDate = new Date(date);
-			Date datum = new Date(longDate.getYear(),longDate.getMonth(), longDate.getDate());
-			
-			if ( !list.contains(datum.getTime()) ) {
-				list.add(datum.getTime());
-			}
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return list;
-		
-	}
-	
-	/**
-	 * Reads all dates from the database.
-	 * @return 
-	 * 
-	 * @return
-	 */
 	public List<String> readDateString() {	
 		
 		Cursor cursor = 
@@ -181,6 +149,11 @@ public class Database {
 		
 	}
 	
+	/**
+	 * create test data
+	 * 
+	 * @return
+	 */
 	public boolean insertData() {
 		ContentValues values = new ContentValues();
 		values.put("timestamp", new Date().getTime()-86400000*3);
@@ -229,6 +202,13 @@ public class Database {
 		return true;
 	}
 	
+	/**
+	 * checks if enough time has passed since the last record was saved
+	 * 
+	 * @param newData
+	 * @param period
+	 * @return
+	 */
 	public boolean waitingPeriodHasElapsed(GeoDataPoint newData, long period) {
 		Cursor cursor = db.query(tblname, new String[]{"MAX(timestamp)"}, null, null, null, null, null);
 		cursor.moveToFirst();

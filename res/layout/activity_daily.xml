@@ -36,14 +36,4 @@
 
     </ListView>
 
-    <Button
-        android:id="@+id/buttonPunkt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/locationsList"
-        android:onClick="newGeoDataPoint"
-        android:text="Button"
-        android:visibility="invisible" />
-
 </RelativeLayout>

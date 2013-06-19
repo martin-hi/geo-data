@@ -17,42 +17,10 @@
         android:layout_alignParentEnd="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
-        android:layout_below="@+id/textViewMain"
+        android:layout_alignParentTop="true"
         android:clickable="true"
         android:visibility="visible" >
 
     </ListView>
-
-    <TextView
-        android:id="@+id/textViewMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/datesList"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="19dp"
-        android:text="TextView"
-        android:visibility="invisible" />
-
-    <Button
-        android:id="@+id/buttonInsertData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textViewMain"
-        android:layout_marginLeft="64dp"
-        android:layout_toRightOf="@+id/textViewMain"
-        android:onClick="insertData"
-        android:text="DB"
-        android:visibility="invisible" />
-
-    <Button
-        android:id="@+id/buttonNewDataPoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/buttonInsertData"
-        android:layout_alignBottom="@+id/buttonInsertData"
-        android:layout_alignRight="@+id/datesList"
-        android:onClick="insertRecord"
-        android:text="Punkt"
-        android:visibility="invisible" />
 
 </RelativeLayout>

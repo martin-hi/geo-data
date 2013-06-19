@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -39,7 +38,6 @@ public class DailyActivity extends Activity {
 		
 		
 		Bundle daten = getIntent().getExtras();
-//		dataPoints = daten.getParcelableArrayList("dataPoints");
 		
 		long longDate = daten.getLong("dataDates");
 		
@@ -53,7 +51,6 @@ public class DailyActivity extends Activity {
 		mapView.getSettings().setJavaScriptEnabled(true);
 		
 		// read all records from database
-//		dataPoints = new ArrayList<GeoDataPoint>();
 		dataPoints = db.read(longDate);
 		Collections.sort(dataPoints);
 
@@ -65,12 +62,10 @@ public class DailyActivity extends Activity {
 		listView = (ListView) findViewById(R.id.locationsList);
 		arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dataPoints);
 		listView.setAdapter(arrayAdapter);
-		GeodatenLocationListener.INSTANCE.setDailyAdapter(arrayAdapter);
 		arrayAdapter.notifyDataSetChanged();
 		
 		String ausgabe = "";
 		Date date = new Date(longDate);
-		// TODO: Datum für den Montag wird falsch angezeigt
 		ausgabe = "Am " + Database.DAY_FORMAT.format(date) + " hast du ";
 				
 		DecimalFormat f = new DecimalFormat("#0.00");
@@ -84,16 +79,6 @@ public class DailyActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.daily, menu);
 		return true;
-	}
-
-	public void newGeoDataPoint (View view) {
-		
-		GeoDataPoint data = new GeoDataPoint(20.0d, -20.0d);
-		dataPoints.add(data);
-		db.write(data);
-		
-		Date date = new Date(data.getDate().getDate(), data.getDate().getMonth(), data.getDate().getYear());
-		arrayAdapter.notifyDataSetChanged();
 	}
 	
 }

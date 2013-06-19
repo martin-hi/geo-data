@@ -6,26 +6,38 @@ package de.rbz.geodaten.gps;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
+ * Describes a recorded location with timestamp.
+ * 
  * @author l_admin
  *
  */
-public class GeoDataPoint implements Comparable<GeoDataPoint>, Parcelable{
+public class GeoDataPoint implements Comparable<GeoDataPoint>{
 	
 	private static final SimpleDateFormat formatter = new SimpleDateFormat();
 	
 	private final Date date;
 	private final double latitude, longitude;
 
+	/**
+	 * Creates a new GeoDataPoint for the current system time and given coordinates.
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 */
 	public GeoDataPoint(double latitude, double longitude) {
 		this.date = new Date();
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 	
+	/**
+	 * Creates a new GeoDataPoint for the given Date and coordinates.
+	 * 
+	 * @param date
+	 * @param latitude
+	 * @param longitude
+	 */
 	public GeoDataPoint(Date date, double latitude, double longitude) {
 		this.date = date;
 		this.latitude = latitude;
@@ -69,39 +81,5 @@ public class GeoDataPoint implements Comparable<GeoDataPoint>, Parcelable{
 	    	return BEFORE;
 	    }
 	}
-
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeDouble(latitude);
-		dest.writeDouble(longitude);
-		dest.writeLong(date.getTime());
-		
-	}
-	
-	public GeoDataPoint(Parcel parcel) {
-		this.latitude = parcel.readDouble();
-		this.longitude = parcel.readDouble();
-		this.date = new Date(parcel.readLong());
-	}
-	
-	public static final Parcelable.Creator<GeoDataPoint> CREATOR = new Creator<GeoDataPoint>() {
-
-	    public GeoDataPoint createFromParcel(Parcel source) {
-
-	        return new GeoDataPoint(source);
-	    }
-
-	    public GeoDataPoint[] newArray(int size) {
-
-	        return new GeoDataPoint[size];
-	    }
-
-	};
 	
 }
