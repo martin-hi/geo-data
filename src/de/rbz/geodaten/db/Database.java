@@ -3,6 +3,7 @@
  */
 package de.rbz.geodaten.db;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,8 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.format.DateFormat;
+import android.widget.TextView;
 import de.rbz.geodaten.gps.GeoDataPoint;
 
 /**
@@ -20,6 +23,8 @@ import de.rbz.geodaten.gps.GeoDataPoint;
  */
 public class Database {
 	
+	
+	public static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 	private static String tblname = "tbl_geodaten"; 
 	
 	private final static String CREATE_TABLE_GEODATA = "CREATE TABLE " + tblname + " ("
@@ -78,35 +83,161 @@ public class Database {
 	    }
 	    return false;
 	}
+
+	/**
+	 * Reads all dates from the database.
+	 * @return 
+	 * 
+	 * @return
+	 */
+	public List<Long> readDate() {
+		Cursor cursor = 
+				db.query(tblname, 
+						 new String[] {"timestamp"},
+						 null, null, null, null, "timestamp DESC");
+		
+		cursor.moveToFirst();
+		List<Long> list = new ArrayList<Long>();
+		
+		for(int i = 0; i < cursor.getCount(); i++) {
+			long date = cursor.getLong(0);
+			Date longDate = new Date(date);
+			Date datum = new Date(longDate.getYear(),longDate.getMonth(), longDate.getDate());
+			
+			if ( !list.contains(datum.getTime()) ) {
+				list.add(datum.getTime());
+			}
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return list;
+		
+	}
+	
+	/**
+	 * Reads all dates from the database.
+	 * @return 
+	 * 
+	 * @return
+	 */
+	public List<String> readDateString() {	
+		
+		Cursor cursor = 
+				db.query(tblname, 
+						 new String[] {"timestamp"},
+						 null, null, null, null, "timestamp DESC");
+		
+		cursor.moveToFirst();
+		List<String> list = new ArrayList<String>();
+		
+		for(int i = 0; i < cursor.getCount(); i++) {
+			long date = cursor.getLong(0);
+			Date datum = new Date(date);
+						
+			String formattedDate = DAY_FORMAT.format(datum.getTime());
+			
+			if ( !list.contains(formattedDate))  {
+				list.add(formattedDate);
+			}
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return list;
+		
+	}
+	
 	
 	/**
 	 * Reads all records from the database.
 	 * 
 	 * @return
 	 */
-	public List<GeoDataPoint> read() {
+	public List<GeoDataPoint> read(Long longDate) {
 		Cursor cursor = 
 				db.query(
 						tblname, 
-						new String[] {"timestamp", "longitude", "latitude"},
+						new String[] {"timestamp", "latitude", "longitude"},
 						null, null, null, null, "timestamp DESC");
 		
 		cursor.moveToFirst();
+		
 		List<GeoDataPoint> list = new ArrayList<GeoDataPoint>();
 		
 		for(int i = 0; i < cursor.getCount(); i++) {
 			long timestamp = cursor.getLong(0);
-			double latitude = cursor.getDouble(1);
-			double longitude = cursor.getDouble(2);
-			Date date = new Date(timestamp);
 			
-			list.add(new GeoDataPoint(date, latitude, longitude));
+			if ( timestamp >= longDate && timestamp < (longDate + 86400000) ) { 
+				double latitude = cursor.getDouble(1);
+				double longitude = cursor.getDouble(2);
+				Date date = new Date(timestamp);
 			
+				list.add(new GeoDataPoint(date, latitude, longitude));
+			}
 			cursor.moveToNext();
 		}
 		
+		cursor.close();
 		return list;
 		
+	}
+	
+	public boolean insertData() {
+		ContentValues values = new ContentValues();
+		values.put("timestamp", new Date().getTime()-86400000*3);
+		values.put("latitude", 54.3232d);
+		values.put("longitude",  10.1227d);
+		
+		db.insertOrThrow(tblname, null, values);
+		
+		values = new ContentValues();
+		values.put("timestamp", new Date().getTime() - 86400000*3-100000);
+		values.put("latitude", 54.3099d);
+		values.put("longitude",  10.1324d);
+		
+		db.insertOrThrow(tblname, null, values);	
+
+		values = new ContentValues();
+		values.put("timestamp", new Date().getTime() - 200000 - 86400000*3);
+		values.put("latitude", 54.3057d);
+		values.put("longitude",  10.1631d);
+		
+		db.insertOrThrow(tblname, null, values);	
+
+		// gestern
+		values = new ContentValues();
+		values.put("timestamp", new Date().getTime() - 86400000);
+		values.put("latitude", 54.3232d);
+		values.put("longitude",  10.1227d);
+		
+		db.insertOrThrow(tblname, null, values);
+		
+		values = new ContentValues();
+		values.put("timestamp", new Date().getTime() - 86400000 - 100000);
+		values.put("latitude", 54.3099d);
+		values.put("longitude",  10.1324d);
+		
+		db.insertOrThrow(tblname, null, values);	
+
+		// vorgestern
+		values = new ContentValues();
+		values.put("timestamp", new Date().getTime() - 2 * 86400000);
+		values.put("latitude", 54.3057d);
+		values.put("longitude",  10.1631d);
+		
+		db.insertOrThrow(tblname, null, values);	
+		
+		return true;
+	}
+	
+	public boolean waitingPeriodHasElapsed(GeoDataPoint newData, long period) {
+		Cursor cursor = db.query(tblname, new String[]{"MAX(timestamp)"}, null, null, null, null, null);
+		cursor.moveToFirst();
+				
+		long maxTime = cursor.getLong(0);
+		
+		cursor.close();		
+		
+		return maxTime + period < newData.getDate().getTime();		
 	}
 
 }

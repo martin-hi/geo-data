@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:onClick="onListItemClick"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -9,32 +10,46 @@
     tools:context=".MainActivity" >
 
     <ListView
-        android:id="@+id/locationsList"
+        android:id="@+id/datesList"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/textViewMain"
         android:clickable="true"
         android:visibility="visible" >
 
     </ListView>
 
-    <WebView
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignLeft="@+id/locationsList"
-        android:layout_below="@+id/locationsList" />
-
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/textViewMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/locationsList"
+        android:layout_alignLeft="@+id/datesList"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="19dp"
         android:text="TextView" />
+
+    <Button
+        android:id="@+id/buttonInsertData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textViewMain"
+        android:layout_marginLeft="64dp"
+        android:layout_toRightOf="@+id/textViewMain"
+        android:onClick="insertData"
+        android:text="DB" />
+
+    <Button
+        android:id="@+id/buttonNewDataPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonInsertData"
+        android:layout_alignBottom="@+id/buttonInsertData"
+        android:layout_alignRight="@+id/datesList"
+        android:onClick="insertRecord"
+        android:text="Punkt" />
 
 </RelativeLayout>
